@@ -26,7 +26,7 @@ class Articles(Resource):
             return "", 404
         return post.to_dict(), 200
 
-    def post(self):
+    def post(self, uuid):
         film_json = request.json
         if not film_json:
             return {'message': 'Wrong data'}, 400
@@ -68,8 +68,8 @@ class Articles(Resource):
         return {'message': 'Updated successfully'}, 200
 
     def patch(self, uuid):
-        film = db.session.query(Post).filter_by(uuid=uuid).first()
-        if not film:
+        post = db.session.query(Post).filter_by(uuid=uuid).first()
+        if not post:
             return "", 404
         film_json = request.json
         title = film_json.get('title'),
@@ -80,17 +80,17 @@ class Articles(Resource):
         updated_on = datetime.datetime.strptime(film_json['created_on'], '%B %d, %Y'),
 
         if title:
-            film.title = title
+            post.title = title
         elif slug:
-            film.slug = slug
+            post.slug = slug
         elif content:
-            film.content = content
+            post.content = content
         elif uuid:
-            film.uuid = uuid
+            post.uuid = uuid
         elif created_on:
-            film.created_on = created_on
+            post.created_on = created_on
         elif updated_on:
-            film.updated_on = updated_on
+            post.updated_on = updated_on
 
         db.session.add(film)
         db.session.commit()
